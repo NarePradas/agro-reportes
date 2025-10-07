@@ -507,7 +507,7 @@ async function generarPDF() {
   const nombreArchivo = `Informe_${establecimiento.replace(/\s+/g, "_")}_${fecha.replace(/\//g, "-")}.pdf`
   doc.save(nombreArchivo)
 
-  alert("PDF generado exitosamente")
+  // alert("PDF generado exitosamente")
 }
 
 // ============================================
