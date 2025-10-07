@@ -5,7 +5,11 @@ const appState = {
 }
 
 let loteCounter = 0
-
+function formatearFecha(fechaISO) {
+  if (!fechaISO) return ""
+  const [year, month, day] = fechaISO.split("-")
+  return `${day}/${month}/${year}`
+}
 // ============================================
 // FUNCIONES PARA LOTES
 // ============================================
@@ -500,7 +504,7 @@ async function generarPDF() {
     yPos += splitObs.length * 5 + 8
   }
 
-  const nombreArchivo = `Informe_${establecimiento.replace(/\s+/g, "_")}_${fecha}.pdf`
+  const nombreArchivo = `Informe_${establecimiento.replace(/\s+/g, "_")}_${fecha.replace(/\//g, "-")}.pdf`
   doc.save(nombreArchivo)
 
   alert("PDF generado exitosamente")
@@ -513,3 +517,4 @@ async function generarPDF() {
 window.addEventListener("DOMContentLoaded", () => {
   agregarLote()
 })
+
