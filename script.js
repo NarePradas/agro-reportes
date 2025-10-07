@@ -76,7 +76,8 @@ function agregarLote() {
               <th>Nombre</th>
               <th>Dosis por Ha</th>
               <th>Unidad</th>
-              <th>Precio USD/ha</th>
+              <th>Precio USD</th>
+              <th>USD/Ha</th>
               <th>Cantidad Total</th>
               <th>Acciones</th>
             </tr>
@@ -84,7 +85,7 @@ function agregarLote() {
           <tbody></tbody>
           <tfoot>
             <tr class="total-row">
-              <td colspan="3"><strong>TOTAL USD/Ha:</strong></td>
+              <td colspan="4"><strong>TOTAL USD/Ha:</strong></td>
               <td class="total-usd-ha">$0.00</td>
               <td colspan="2"></td>
             </tr>
@@ -139,7 +140,8 @@ function agregarProducto(loteIndex) {
         <option value="kg/ha">kg/ha</option>
       </select>
     </td>
-    <td><input type="number" class="prod-precio-ha" placeholder="0.00" min="0" step="0.01" required onchange="actualizarCalculosLote(${loteIndex})"></td>
+    <td><input type="number" class="prod-precio-usd" placeholder="0.00" min="0" step="0.01" required onchange="actualizarCalculosLote(${loteIndex})"></td>
+    <td class="prod-usd-ha-display">$0.00</td>
     <td class="prod-cantidad-total-display">0.00 L</td>
     <td><button type="button" class="btn-delete-small" onclick="eliminarProducto(this, ${loteIndex})">Eliminar</button></td>
   `
@@ -167,17 +169,23 @@ function actualizarCalculosLote(loteIndex) {
 
   filas.forEach((fila) => {
     const dosisHectarea = Number.parseFloat(fila.querySelector(".prod-dosis-hectarea").value) || 0
-    const precioHa = Number.parseFloat(fila.querySelector(".prod-precio-ha").value) || 0
+    const precioUsd = Number.parseFloat(fila.querySelector(".prod-precio-usd").value) || 0
     const unidad = fila.querySelector(".prod-unidad").value
+    const usdHaDisplay = fila.querySelector(".prod-usd-ha-display")
     const cantidadTotalDisplay = fila.querySelector(".prod-cantidad-total-display")
+
+    let usdHa = 0
+    if (dosisHectarea > 0) {
+      usdHa = precioUsd / dosisHectarea
+    }
+    usdHaDisplay.textContent = `$${usdHa.toFixed(2)}`
 
     // Calcular cantidad total basada en hectáreas
     const cantidadTotal = dosisHectarea * hectareas
     const unidadBase = unidad.split("/")[0] // "L" o "kg"
     cantidadTotalDisplay.textContent = `${cantidadTotal.toFixed(2)} ${unidadBase}`
 
-    // Sumar al total USD/Ha
-    totalUsdHa += precioHa
+    totalUsdHa += usdHa
   })
 
   // Actualizar el total USD/Ha en el footer de la tabla
@@ -214,7 +222,8 @@ function recopilarLotes() {
       const nombreProd = fila.querySelector(".prod-nombre").value.trim()
       const dosisHectarea = Number.parseFloat(fila.querySelector(".prod-dosis-hectarea").value) || 0
       const unidad = fila.querySelector(".prod-unidad").value
-      const precioHa = Number.parseFloat(fila.querySelector(".prod-precio-ha").value) || 0
+      const precioUsd = Number.parseFloat(fila.querySelector(".prod-precio-usd").value) || 0
+      const usdHa = dosisHectarea > 0 ? precioUsd / dosisHectarea : 0
       const cantidadTotal = dosisHectarea * hectareas
 
       if (nombreProd && dosisHectarea > 0) {
@@ -222,10 +231,11 @@ function recopilarLotes() {
           nombre: nombreProd,
           dosisHectarea,
           unidad,
-          precioHa,
+          precioUsd,
+          usdHa,
           cantidadTotal,
         })
-        totalUsdHa += precioHa
+        totalUsdHa += usdHa
       }
     })
 
@@ -421,20 +431,20 @@ async function generarPDF() {
       }
     }
 
-    // Tabla de productos del lote
     if (lote.productos.length > 0) {
       doc.autoTable({
         startY: yPos,
-        head: [["Producto", "Dosis/Ha", "Precio USD/ha", "Cantidad Total"]],
+        head: [["Producto", "Dosis/Ha", "Precio USD", "USD/Ha", "Cantidad Total"]],
         body: lote.productos.map((p) => [
           p.nombre,
           `${p.dosisHectarea} ${p.unidad}`,
-          `$${p.precioHa.toFixed(2)}`,
+          `$${p.precioUsd.toFixed(2)}`,
+          `$${p.usdHa.toFixed(2)}`,
           `${p.cantidadTotal.toFixed(2)} ${p.unidad.split("/")[0]}`,
         ]),
         foot: [
           [
-            { content: "TOTAL USD/Ha:", colSpan: 2, styles: { halign: "right", fontStyle: "bold" } },
+            { content: "TOTAL USD/Ha:", colSpan: 3, styles: { halign: "right", fontStyle: "bold" } },
             { content: `$${lote.totalUsdHa.toFixed(2)}`, styles: { fontStyle: "bold", fillColor: [240, 248, 240] } },
             "",
           ],
