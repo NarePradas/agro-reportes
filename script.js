@@ -310,12 +310,12 @@ async function generarPDF() {
   doc.setFontSize(9)
   doc.setFont(undefined, "normal")
   doc.setTextColor(255, 255, 255)
-  doc.text(
-    "Ingeniero Agrónomo Bruno Segovia Larragneguy - Asesor Comercial Rindes y Cultivos DAS",
-    pageWidth / 2,
-    yPos,
-    { align: "center" },
-  )
+  // doc.text(
+  //   "-",
+  //   pageWidth / 2,
+  //   yPos,
+  //   { align: "center" },
+  // )
 
   yPos = 50
   doc.setTextColor(0, 0, 0)
