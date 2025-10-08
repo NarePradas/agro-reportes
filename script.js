@@ -180,7 +180,7 @@ function actualizarCalculosLote(loteIndex) {
 
     let usdHa = 0
     if (dosisHectarea > 0) {
-      usdHa = precioUsd / dosisHectarea
+      usdHa = precioUsd * dosisHectarea
     }
     usdHaDisplay.textContent = `$${usdHa.toFixed(2)}`
 
@@ -227,7 +227,7 @@ function recopilarLotes() {
       const dosisHectarea = Number.parseFloat(fila.querySelector(".prod-dosis-hectarea").value) || 0
       const unidad = fila.querySelector(".prod-unidad").value
       const precioUsd = Number.parseFloat(fila.querySelector(".prod-precio-usd").value) || 0
-      const usdHa = dosisHectarea > 0 ? precioUsd / dosisHectarea : 0
+      const usdHa = dosisHectarea > 0 ? precioUsd * dosisHectarea : 0
       const cantidadTotal = dosisHectarea * hectareas
 
       if (nombreProd && dosisHectarea > 0) {
