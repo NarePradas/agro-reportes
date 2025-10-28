@@ -438,7 +438,7 @@ async function generarPDF() {
     if (lote.productos.length > 0) {
       doc.autoTable({
         startY: yPos,
-        head: [["Producto", "Dosis/Ha", "Precio USD", "USD/Ha", "Cantidad Total"]],
+        head: [["Producto", "Dosis/Ha", "Precio USD/Lt/Kg", "USD/Ha", "Cantidad Total"]],
         body: lote.productos.map((p) => [
           p.nombre,
           `${p.dosisHectarea} ${p.unidad}`,
