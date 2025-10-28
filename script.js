@@ -80,7 +80,7 @@ function agregarLote() {
               <th>Nombre</th>
               <th>Dosis por Ha</th>
               <th>Unidad</th>
-              <th>Precio USD</th>
+              <th>Precio USD/Lt/Kg</th>
               <th>USD/Ha</th>
               <th>Cantidad Total</th>
               <th>Acciones</th>
